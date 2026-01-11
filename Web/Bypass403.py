@@ -61,7 +61,8 @@ def read_file(file_path):
     return agents
 
 def write_to_file(file_path,response,parms):
-    # I want parms to be a dic
+
+    # Parms is a Dic 
     # {"url", "method", "agent", "content_type","header", "ip"}
 
     with open(file_path, 'a') as file:
@@ -94,7 +95,7 @@ PROXIES = {
     "https":"127.0.0.1:8080"
 }
 
-# I cannot make it optional since bypassing depends on passing those parameters
+# Cannot make it optional since bypassing depends on passing those parameters
 if len(sys.argv) < 4:
     print(f"[!] Incorrect number of arguments.")
     print(f"[!] Usage: {sys.argv[0]} <full_target_url> <agent_wordlist_file> <headers_wordlists> <ip_header_wordlist> <auth token>[optional]")
@@ -113,6 +114,7 @@ ips = read_file(sys.argv[4])
 splited_url = sys.argv[1].split('/')
 last_segment= splited_url[-1]
 
+# Define the structure of the test case.
 def test_case(method, url, headers, auth=None):
     return {
         "method": method,
@@ -158,19 +160,6 @@ def generate_test_case():
                                     "Forwarded_header": forwarded_header,
                                     "ip" : ip
                                 })
-
-                            # write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt",{
-                            #     "modified_url" : modified_url,
-                            #     "method" : method,
-                            #     "agent" : agent,
-                            #     "content_type" : content_type,
-                            #     "forwarded_header": forwarded_header,
-                            #     "ip": ip
-                            # })
-                            # if sys.argv[5]:
-                            #     authorization_token = sys.argv[5]
-                            # else:
-                            #     authorization_token = ""
 
     print(f"[*] Finished appending results to the file. ")
 
