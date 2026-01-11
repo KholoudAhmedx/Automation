@@ -58,6 +58,17 @@ def read_file(file_path):
         agents = file.readlines()
     return agents
 
+def write_to_file(file_path, parms, response=None):
+    # I want parms to be a dic
+    # {"url", "method", "agent", "content_type","header", "ip"}
+
+    with open(file_path, 'a') as file:
+        file.write(f"[*] Trying url {parms['modified_url']}, Method {parms['method']} with User-Agent:{parms['agent']} with Content-Type : {parms['content_type']} with header {parms['forwarded_header']} with ip value {parms['ip']}")
+        file.write("\n")
+        #file.write(f"Response : {response.text}\n")
+        file.write("\n************************************************************\n")
+
+
 
 HTTP_METHODS = ['GET', 'POST', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH']
 
