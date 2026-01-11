@@ -60,14 +60,16 @@ def read_file(file_path):
         agents = file.readlines()
     return agents
 
-def write_to_file(file_path, parms, response=None):
+def write_to_file(file_path,response,parms):
     # I want parms to be a dic
     # {"url", "method", "agent", "content_type","header", "ip"}
 
     with open(file_path, 'a') as file:
-        file.write(f"[*] Trying url {parms['modified_url']}, Method {parms['method']} with User-Agent:{parms['agent']} with Content-Type : {parms['content_type']} with header {parms['forwarded_header']} with ip value {parms['ip']}")
-        file.write("\n")
-        #file.write(f"Response : {response.text}\n")
+        file.write(f"[*] Trying url {parms['modified_url']}, Method {parms['method']} with User-Agent:{parms['agent']} with Content-Type : {parms['content_type']} with header {parms['forwarded_header']} with ip value {parms['ip']}\n")
+        if not response.text:
+            file.write(f"empty response")
+        else:
+            file.write(f"Response : {response.text}\n")
         file.write("\n************************************************************\n")
 
 
@@ -140,13 +142,23 @@ def generate_test_case():
                         ip = ip.strip()
                         for method in range(len(HTTP_METHODS)):
                             method = HTTP_METHODS[method]
-                            
-                            yield test_case(method, modified_url, headers={
-                                "User-Agent": agent,
-                                "Content-Type": content_type,
-                                "Forwarded_header": forwarded_header,
-                                "ip" : ip
-                            })
+                            if sys.argv[5]:
+
+                                yield test_case(method, modified_url, headers={
+                                    "User-Agent": agent,
+                                    "Content-Type": content_type,
+                                    "Forwarded_header": forwarded_header,
+                                    "ip" : ip,
+                                    "Authorization": sys.argv[5]
+                                })
+                            else:
+                                yield test_case(method, modified_url, headers={
+                                    "User-Agent": agent,
+                                    "Content-Type": content_type,
+                                    "Forwarded_header": forwarded_header,
+                                    "ip" : ip
+                                })
+
                             # write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt",{
                             #     "modified_url" : modified_url,
                             #     "method" : method,
@@ -166,10 +178,20 @@ def send_request():
 
     for i in generate_test_case():
         #print(i)
-        requests.request(i["method"],i["url"], headers={
+        response = requests.request(i["method"],i["url"], headers={
             "Content-Type": i["headers"]["Content-Type"],
             i["headers"]["Forwarded_header"]:i["headers"]["ip"],
             "User-Agent": i["headers"]["User-Agent"]
         }, proxies=PROXIES, verify=False)
+
+        write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt", response, {
+            "modified_url":i["url"],
+            "method": i["method"],
+            "agent":i["headers"]["User-Agent"],
+            "content_type": i["headers"]["Content-Type"],
+            "forwarded_header":i["headers"]["Forwarded_header"],
+            "ip":i["headers"]["ip"]
+        })
+
 
 send_request()
