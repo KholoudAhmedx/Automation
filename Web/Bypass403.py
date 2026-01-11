@@ -18,7 +18,8 @@ The goal is to automate testing all approaches to bypass it including but not li
 12. Try to conquer it if some of the methods or techniques does not make difference. -- next step.
 13. Add auth header and see if it makes difference (403 test instead of 401) -- done
 14. Display the request arch (to make sure it is structured correctly). -- next step.
-15 leveraging `curl` command to perform requests with different techniques.
+15 leveraging `curl` command to perform requests with different techniques -- used "requests" lib instead -- ingored
+16. Add UI -- next step 
 '''
 
 '''
@@ -54,7 +55,6 @@ import sys
 
 
 ## Helper Methods
-
 def read_file(file_path):
     with open(file_path, 'r') as file:
         agents = file.readlines()
