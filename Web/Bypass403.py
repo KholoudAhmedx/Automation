@@ -129,7 +129,7 @@ def generate_test_case():
                         ip = ip.strip()
                         for method in range(len(HTTP_METHODS)):
                             method = HTTP_METHODS[method]
-                            write_to_file("../Results/bypass403-results.txt",{
+                            write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt",{
                                 "modified_url" : modified_url,
                                 "method" : method,
                                 "agent" : agent,
@@ -143,3 +143,5 @@ def generate_test_case():
                                 authorization_token = ""
 
     print(f"[*] Finished appending results to the file. ")
+
+generate_test_case()
