@@ -99,30 +99,6 @@ splited_url = sys.argv[1].split('/')
 last_segment= splited_url[-1]
 
 
-## Shift the model from looping over all cases to "generating testcases and then executing them"
-## Test case: 
-    ## Method = GET
-    ## User-Agent = X
-    ## Content-Type = Y
-    ## Forwarded-Header = Z
-    ## IP = 1.2.3.4
-    ## Auth = present/ absent
-
-## Design optimization:
-  ## Questions to ask myself:
-    ## 1. Which dimensions should be paired (e.g., forwarder headers and IPs)
-    ## 2. Do I need to test every combination?
-    ## 3. What varies, what stays constant? (e.g., URL usually constant)
-    ## 4. What should be a single test case? 
-    ## 5. What fields does it have or should have? What are optional fields? 
-
-  ## Design considerations:
-    ## 1. Execution logic remain clean and flat; One loop for generating test cases, one for executing them. 
-    ## 2. Reduce combinations without loosing coverage.
-
-  ## Test case design:
-    ## A test case is a one concrete HTTP request .
-    ## <Method, Endpoint, Authentication/NoAuth, Extra-headers (User-Agent, Content-Type, Forwarded-Header + IP)>
 
 # Test logic happens here
 def generate_test_case():
