@@ -96,47 +96,37 @@ last_segment= splited_url[-1]
     ## A test case is a one concrete HTTP request .
     ## <Method, Endpoint, Authentication/NoAuth, Extra-headers (User-Agent, Content-Type, Forwarded-Header + IP)>
 
+# Test logic happens here
+def generate_test_case():
+    for char in PATH_NORM:
+        if (char == ''):
+            modified_url = sys.argv[1]
+        else:
+            modified_url = '/'.join(splited_url[:-1] + [char] + [last_segment])
+        print(f"[*] Trying URL: {modified_url}")
+        for agent in agents:
+            agent = agent.strip()
+            for content_type in CONTENT_TYPES:
+                content_type = content_type.strip()
+                for forwarded_header in forwarded_headers:
+                    forwarded_header = forwarded_header.strip()
+                    for ip in ips:
+                        ip = ip.strip()
+                        for method in range(len(HTTP_METHODS)):
+                            method = HTTP_METHODS[method]
+                            write_to_file("../Results/bypass403-results.txt",{
+                                "modified_url" : modified_url,
+                                "method" : method,
+                                "agent" : agent,
+                                "content_type" : content_type,
+                                "forwarded_header": forwarded_header,
+                                "ip": ip
+                            })
+                            if sys.argv[5]:
+                                authorization_token = sys.argv[5]
+                            else:
+                                authorization_token = ""
 
-for char in PATH_NORM:
-
-    if (char == ''):
-        modified_url = sys.argv[1]
-    else: 
-        modified_url = '/'.join(splited_url[:-1] + [char] + [last_segment])
-    
-    print(f"[*] Trying URL: {modified_url}")
-
-    for agent in agents:
-        
-        agent = agent.strip()
-        for content_type in CONTENT_TYPES:
-            
-            content_type = content_type.strip()
-
-            for forwarded_header in forwarded_headers:
-
-                forwarded_header = forwarded_header.strip()
-                for ip in ips:
-
-                    ip = ip.strip()
-                    for i in range(len(HTTP_METHODS)):
-                        
-                        method = HTTP_METHODS[i]
-                        
-                        if sys.argv[5]:
-                            authorization_token = sys.argv[5]
-                            response = requests.request(method, modified_url, headers =  {"User-Agent": agent, "Content-Type" :content_type, forwarded_header: ip, "Authorization": authorization_token}, proxies=PROXIES, verify=False)
-                        else:
-                            response = requests.request(method, modified_url, headers =  {"User-Agent": agent, "Content-Type" :content_type, forwarded_header: ip}, proxies=PROXIES, verify=False)
-
-                        print(f"[*] appedning results to the file....")
-                        
-                        with open("../Results/bypass403-results.txt", 'w') as result_file:
-                            result_file.write(f"[*] Trying url {modified_url}, Method {method} with User-Agent:{agent} with Content-Type : {content_type} with header {forwarded_header} with ip value {ip})\n")
-                            result_file.write("\n")
-                            result_file.write(f"Response : {response.text}\n")
-                            result_file.write("\n************************************************************\n")
-    
     print(f"[*] Finished appending results to the file. ")
 
 # Test logic happens here
