@@ -109,6 +109,15 @@ ips = read_file(sys.argv[4])
 splited_url = sys.argv[1].split('/')
 last_segment= splited_url[-1]
 
+def test_case(method, url, headers, auth=None):
+    return {
+        "method": method,
+        "url": url,
+        "headers": headers,
+        "auth": auth
+    }
+
+
 
 
 # Test logic happens here
@@ -129,19 +138,35 @@ def generate_test_case():
                         ip = ip.strip()
                         for method in range(len(HTTP_METHODS)):
                             method = HTTP_METHODS[method]
-                            write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt",{
-                                "modified_url" : modified_url,
-                                "method" : method,
-                                "agent" : agent,
-                                "content_type" : content_type,
-                                "forwarded_header": forwarded_header,
-                                "ip": ip
+                            
+                            yield test_case(method, modified_url, headers={
+                                "User-Agent": agent,
+                                "Content-Type": content_type,
+                                "Forwarded_header": forwarded_header,
+                                "ip" : ip
                             })
-                            if sys.argv[5]:
-                                authorization_token = sys.argv[5]
-                            else:
-                                authorization_token = ""
+                            # write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt",{
+                            #     "modified_url" : modified_url,
+                            #     "method" : method,
+                            #     "agent" : agent,
+                            #     "content_type" : content_type,
+                            #     "forwarded_header": forwarded_header,
+                            #     "ip": ip
+                            # })
+                            # if sys.argv[5]:
+                            #     authorization_token = sys.argv[5]
+                            # else:
+                            #     authorization_token = ""
 
     print(f"[*] Finished appending results to the file. ")
 
-generate_test_case()
+def send_request():
+    for i in generate_test_case():
+        #print(i)
+        requests.request(i["method"],i["url"], headers={
+            "Content-Type": i["headers"]["Content-Type"],
+            i["headers"]["Forwarded_header"]:i["headers"]["ip"],
+            "User-Agent": i["headers"]["User-Agent"]
+        }, proxies=PROXIES, verify=False)
+
+send_request()
