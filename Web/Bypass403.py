@@ -7,10 +7,12 @@ The goal is to automate testing all approaches to bypass it including but not li
 3. HTTP Methods -- done 
 4. User Agents -- done
 5. Other headers such as Content-Type -- done 
-6. Append IP addresses -- next step
+6. Append IP addresses --done 
+    6.1 Add a richer list of IPs maybe
+
 7. Optimize code. -- next step
-8. Refererer Headers
-9. Test on valid valid scenarios. -- next step.
+8. Refererer Headers (not necessary in my case ) --ignored 
+9. Test on valid valid scenarios. -- next step
 10. Send them via burp? -- done
 11. Tailor the args to be more customizable (e.g., if the user does not want to add these lists);--> next step.
 12. Try to conquer it if some of the methods or techniques does not make difference. -- next step.
@@ -161,6 +163,7 @@ def generate_test_case():
     print(f"[*] Finished appending results to the file. ")
 
 def send_request():
+
     for i in generate_test_case():
         #print(i)
         requests.request(i["method"],i["url"], headers={
