@@ -105,6 +105,7 @@ if len(sys.argv) < 4:
 agents = read_file(sys.argv[2])
 forwarded_headers = read_file(sys.argv[3])
 ips = read_file(sys.argv[4])
+print(sys.argv[5])
 
 
 # I want to get the last endpoint to add the path norm char before it, given the url from the user
@@ -122,8 +123,6 @@ def test_case(method, url, headers, auth=None):
         "headers": headers,
         "auth": auth
     }
-
-
 
 
 # Test logic happens here
@@ -144,14 +143,15 @@ def generate_test_case():
                         ip = ip.strip()
                         for method in range(len(HTTP_METHODS)):
                             method = HTTP_METHODS[method]
-                            if sys.argv[5]:
+                            if sys.argv[5].strip():
+                                authentication_token = sys.argv[5]
 
                                 yield test_case(method, modified_url, headers={
                                     "User-Agent": agent,
                                     "Content-Type": content_type,
                                     "Forwarded_header": forwarded_header,
                                     "ip" : ip,
-                                    "Authorization": sys.argv[5]
+                                    "Authorization": authentication_token
                                 })
                             else:
                                 yield test_case(method, modified_url, headers={
@@ -170,7 +170,8 @@ def send_request():
         response = requests.request(i["method"],i["url"], headers={
             "Content-Type": i["headers"]["Content-Type"],
             i["headers"]["Forwarded_header"]:i["headers"]["ip"],
-            "User-Agent": i["headers"]["User-Agent"]
+            "User-Agent": i["headers"]["User-Agent"],
+            "Authorization":i["headers"]["Authorization"]
         }, proxies=PROXIES, verify=False)
 
         write_to_file("/home/ml/Downloads/Clones/Automation/Results/bypass403-results.txt", response, {
