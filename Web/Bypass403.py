@@ -21,6 +21,7 @@ The goal is to automate testing all approaches to bypass it including but not li
 15 leveraging `curl` command to perform requests with different techniques -- used "requests" lib instead -- ingored
 16. Add UI -- next step 
 17. Take the url from a list as well (e.g., "http://example.come/api/v1/login" base + endpoint (/api/v1/login/) fuzz them -- next step
+18. test with both HTTP & HTTPs
 '''
 
 '''
