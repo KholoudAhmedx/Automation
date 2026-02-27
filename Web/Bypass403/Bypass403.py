@@ -177,8 +177,9 @@ def send_request():
             "Authorization":i["headers"]["Authorization"]
         }, proxies=PROXIES, verify=False)
 
+    
         # Adjustable : set it to your default result directory
-        write_to_file("/home/ml/Downloads/Clones/Automation/Web/Bypass403/Results/bypass403-results.txt", response, {
+        write_to_file("/Users/kholoudahmed/Downloads/Clones/Automation/Web/Bypass403/Results/bypass403-results.txt", response, {
             "modified_url":i["url"],
             "method": i["method"],
             "agent":i["headers"]["User-Agent"],
