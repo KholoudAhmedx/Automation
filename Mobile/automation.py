@@ -11,4 +11,6 @@
         - Only run it once, or just prompt the user for the option if he wants
         - Check if there's a keystore already generated (look it up)
   4. Test it repeatdly
+  5. Add also the step of reinstalling the apk to the device/emulator 
+     - Make sure you do it correctly and include all required steps
 '''
