@@ -4,5 +4,6 @@
 1. Create a script to automate the process of building an apk, zipaligning it and signing it
   1. Start by very basic steps
   2. Consider possible errors that may appear
+    1. Make sure you create a keystore (assuming no one is there) and include default username & password
   3. Test it repeatdly
 '''
