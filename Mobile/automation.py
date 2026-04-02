@@ -14,4 +14,5 @@
   4. Test it repeatdly
   5. Add also the step of reinstalling the apk to the device/emulator 
      - Make sure you do it correctly and include all required steps
+  6. Create output directory with the apk name to include all output files from the previous steps (e.g., if app name is loader, then create and ouput directory for loader that includes loaderZipalign.apk, loaderSigned.apk if you will for better organization) 
 '''
