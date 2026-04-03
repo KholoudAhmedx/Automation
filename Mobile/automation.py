@@ -16,3 +16,21 @@
      - Make sure you do it correctly and include all required steps
   6. Create output directory with the apk name to include all output files from the previous steps (e.g., if app name is loader, then create and ouput directory for loader that includes loaderZipalign.apk, loaderSigned.apk if you will for better organization) 
 '''
+
+'''
+Bash vs Python
+
+Bash is good when dealing with commands that I am going to run manually, no extra abstraction
+, no dependency management overhead. It's good for a linear pipeline.
+
+Bash is bad when script grows in complexity overtime. If:
+  1. Add conditional logic overtime 
+  2. Handle errors
+  3. Parse structured output (XML)
+  4. Build interactive menu
+
+Meanwhile, Python can give the best of the two worlds. 
+We can call same terminal commands via subprocess, get proper error handling, cleaner logic flow
+, easier string/file manipulation, and the ability to grow with the tool. 
+
+'''
