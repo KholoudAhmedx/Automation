@@ -33,4 +33,7 @@ Meanwhile, Python can give the best of the two worlds.
 We can call same terminal commands via subprocess, get proper error handling, cleaner logic flow
 , easier string/file manipulation, and the ability to grow with the tool. 
 
+**Conclusion** -- when it comes to complexity and readability Python wins. 
 '''
+
+
