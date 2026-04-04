@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+
+'''
+>[!Note] This tool is supposed to do the repetitive tasks i keep doing when conducting penetration testing. </br>
+>[Note] Decompile code with newer jetpack compose package/framework with `--no-res` option in order to execlude resource from update via this command `apktool d quills.apk -o quills --no-res`
+# Ideas Logs
+1. Create a script to automate the process of building an apk, zipaligning it and signing it
+  1. Start by implementing the very basic steps (re-build, align, and sign)
+  2. Make sure required tools are already installed (`zipalign`, `apksigner`, etc)
+  3. Consider possible errors that may appear & consider edge cases
+    1. Make sure you create a keystore (assuming no one is there) and include default username & password;
+        - Insure you include its steps correctly
+        - Add it to the root directory `/` 
+        - Only run it once, or just prompt the user for the option if he wants
+        - Check if there's a keystore already generated (look it up)
+    2. Make sure apk directory contains "apktool.yml", if not then this is an invalid directory
+    3. Use try & catch to handle exceptions
+  4. Test it repeatdly
+  5. Add also the step of reinstalling the apk to the device/emulator 
+     - Make sure you do it correctly and include all required steps
+  6. Create output directory with the apk name to include all output files from the previous steps (e.g., if app name is loader, then create and ouput directory for loader that includes loaderZipalign.apk, loaderSigned.apk if you will for better organization) 
+  7. Update the structure, make it more organized
+  8. Create a folder for results & add it to .gitingore to avoid uploading it to remote repo
+  9. Enhance the code & its efficiency
+  10. Clean the code:
+      1. Remove unnecessary comments
+      2. Add modularity
+      3. Use meaningful names
+  11. Add the option for each step separate for the sake of user's desire
+  
+'''
+
+'''
+Bash vs Python
+
+Bash is good when dealing with commands that I am going to run manually, no extra abstraction
+, no dependency management overhead. It's good for a linear pipeline.
+
+Bash is bad when script grows in complexity overtime. If:
+  1. Add conditional logic overtime 
+  2. Handle errors
+  3. Parse structured output (XML)
+  4. Build interactive menu
+
+Meanwhile, Python can give the best of the two worlds. 
+We can call same terminal commands via subprocess, get proper error handling, cleaner logic flow
+, easier string/file manipulation, and the ability to grow with the tool. 
+
+**Conclusion** -- when it comes to complexity and readability Python wins. 
+'''
+
+
+import subprocess
+import argparse
+import os
+from pathlib import Path
+
+
+# prompt the user to enter the apk path
+# Set the name of the utility to "repack"
+# Set options -p <path of the apk>
+
+# command should be `repack -p <path of desassembled apk> -o <path to output file>`
+
+# if(len(sys.argv) < 3):
+#     print(f"[!] Incorrect number of arguments")
+#     print(f"[!] Usage: repack -p <path_to_apk>")
+#     sys.exit(-1)
+
+# A better way to do it
+parser = argparse.ArgumentParser(prog="repack",
+                                 description="Repack your apk after decompilation; rebuild, re-align, and re-sign"
+                                 )
+
+parser.add_argument('apk_path')
+parser.add_argument('-o', '--output', type=str)
+args = parser.parse_args()
+
+# # Re-build an APK
+# APK_Path = "/home/analyst/Downloads/Clones/Automation/Mobile/base"
+# subprocess.run(['apktool', 'b', '-o','/home/analyst/Downloads/Clones/Automation/Mobile/output.apk', APK_Path])
+
+def find_key_store():
+  
+  print('[+] Searching for existing keystore...')
+  search_path = os.path.expanduser('~')
+
+  # If multiple key stores are returned, which to use? TO-DO
+  keystore = subprocess.run(['find', search_path, '-name','*keystore1.jks'], capture_output=True, text=True)
+  
+  if(not keystore):
+        
+    # TO-DO : need to be tested
+    print("No keystore found")
+    print("A new key is being generated.....")
+
+    # keytool -genkeypair -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-key-alias
+    keystorename = input("Enter keystore name: ")
+    keystorealias = input("Enter your keystore alias: ")
+    newkeystore = subprocess.run(['keytool', '-genkeypair', '-v', '-keystore', f"{keystorename}.jks", '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000', '-alias', keystorealias], capture_output=True)
+    return newkeystore
+    
+  
+  key_store_path = keystore.stdout.strip()
+  print("The path to keystore is", key_store_path)
+  print("Searching for keystore done.")
+  return key_store_path
+        
+
+
+
+def repack(path):
+      
+    if(args.output):
+          
+      # Re-build the apk
+      subprocess.run(['apktool', 'b',path, '-o', args.output], check=True)
+      raw_name = Path(args.output).stem
+
+      counter = 1
+      while True:
+        dir_name = f"{raw_name}{counter}"
+        if not os.path.exists(dir_name):
+          break
+        counter +=1
+      os.makedirs(dir_name,exist_ok=True)
+
+      
+      # Align the apk
+      aligned_apk_path1 = Path(dir_name)
+      aligned_apk_path2 = os.path.join(aligned_apk_path1, f"{dir_name}aligned.apk")
+      subprocess.run(['zipalign', '-v', '4', args.output, aligned_apk_path2], check=True)
+
+      # Re-sign the modified apk
+      keystore = find_key_store()
+
+      # prompt the user for the keystore password 
+      keystore_pass = f"pass:{input('Please enter keystore password: ')}"
+      key_pass = f"pass:{input('Please enter your key password: ')}"
+
+      subprocess.run(['apksigner', 'sign','--ks', keystore, '--ks-pass', keystore_pass, '--key-pass', key_pass, aligned_apk_path2], check=True)
+
+    
+    # # if no output directory is provided
+    # TODO: use the current directory
+
+repack(args.apk_path)
