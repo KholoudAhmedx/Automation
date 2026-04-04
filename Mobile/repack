@@ -5,7 +5,7 @@
 >[Note] Decompile code with newer jetpack compose package/framework with `--no-res` option in order to execlude resource from update via this command `apktool d quills.apk -o quills --no-res`
 # Ideas Logs
 1. Create a script to automate the process of building an apk, zipaligning it and signing it
-  1. Start by implementing the very basic steps (re-build, align, and sign)
+  1. Start by implementing the very basic steps (re-build, align, and sign) -- done
   2. Make sure required tools are already installed (`zipalign`, `apksigner`, etc)
   3. Consider possible errors that may appear & consider edge cases
     1. Make sure you create a keystore (assuming no one is there) and include default username & password;
@@ -27,7 +27,7 @@
       2. Add modularity
       3. Use meaningful names
   11. Add the option for each step separate for the sake of user's desire
-  
+
 '''
 
 '''
